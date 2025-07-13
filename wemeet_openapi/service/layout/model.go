@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -216,7 +216,7 @@ type V1MeetingsMeetingIdLayoutsPostRequest struct {
 
 // V1MeetingsMeetingIdLayoutsPostRequestLayoutListInner struct for V1MeetingsMeetingIdLayoutsPostRequestLayoutListInner
 type V1MeetingsMeetingIdLayoutsPostRequestLayoutListInner struct {
-    LayoutId string `json:"layout_id"`
+    LayoutId *string `json:"layout_id,omitempty"`
     // 布局单页对象列表
     PageList []V1MeetingsMeetingIdLayoutsPostRequestLayoutListInnerPageListInner `json:"page_list"`
 }

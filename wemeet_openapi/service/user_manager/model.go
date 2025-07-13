@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -126,12 +126,36 @@ type V1UsersAccountAiAccountPostRequest struct {
 
 // V1UsersAccountStatisticsGet200Response struct for V1UsersAccountStatisticsGet200Response
 type V1UsersAccountStatisticsGet200Response struct {
+    // 房间规模升级许可详情。
+    AddOnLargemeetingDetails []V1UsersAccountStatisticsGet200ResponseAddOnLargemeetingDetailsInner `json:"add_on_largemeeting_details,omitempty"`
+    // 网络研讨会（Webinar）观众规模升级许可详情。
+    AddOnWebinarDetails []V1UsersAccountStatisticsGet200ResponseAddOnWebinarDetailsInner `json:"add_on_webinar_details,omitempty"`
     // ai账号类型使用对象（商业版不返回）
     AiAccountDetails []V1UsersAccountStatisticsGet200ResponseAiAccountDetailsInner `json:"ai_account_details,omitempty"`
     // 账号类型使用对象
     UserAccountDetails []V1UsersAccountStatisticsGet200ResponseUserAccountDetailsInner `json:"user_account_details,omitempty"`
     // 当前用户数
     UserCount *int64 `json:"user_count,omitempty"`
+}
+
+// V1UsersAccountStatisticsGet200ResponseAddOnLargemeetingDetailsInner struct for V1UsersAccountStatisticsGet200ResponseAddOnLargemeetingDetailsInner
+type V1UsersAccountStatisticsGet200ResponseAddOnLargemeetingDetailsInner struct {
+    // 升级许可数。
+    AddOnLargemeetingCount *int64 `json:"add_on_largemeeting_count,omitempty"`
+    // 房间规模升级许可类型 1：500方房间规模升级许可 2：1000方房间规模升级许可 3：2000方房间规模升级许可
+    AddOnLargemeetingType *int64 `json:"add_on_largemeeting_type,omitempty"`
+    // 已分配升级许可数。
+    AddOnLargemeetingUsedCount *int64 `json:"add_on_largemeeting_used_count,omitempty"`
+}
+
+// V1UsersAccountStatisticsGet200ResponseAddOnWebinarDetailsInner struct for V1UsersAccountStatisticsGet200ResponseAddOnWebinarDetailsInner
+type V1UsersAccountStatisticsGet200ResponseAddOnWebinarDetailsInner struct {
+    // 升级许可数。
+    AddOnWebinarCount *int64 `json:"add_on_webinar_count,omitempty"`
+    // 增强会议体验：网络研讨会（Webinar）观众规模升级许可类型。 1：Webinar 观众规模提升至 300 观众 2：Webinar 观众规模提升至 500 观众 3：Webinar 观众规模提升至 1000 观众 4：Webinar 观众规模提升至 2000 观众 5：Webinar 观众规模提升至 3000 观众 6：Webinar 观众规模提升至 5000 观众 7：Webinar 观众规模提升至 8000 观众 8：Webinar 观众规模提升至 10000 观众
+    AddOnWebinarType *int64 `json:"add_on_webinar_type,omitempty"`
+    // 已分配升级许可数。
+    AddOnWebinarUsedCount *int64 `json:"add_on_webinar_used_count,omitempty"`
 }
 
 // V1UsersAccountStatisticsGet200ResponseAiAccountDetailsInner struct for V1UsersAccountStatisticsGet200ResponseAiAccountDetailsInner
@@ -167,6 +191,10 @@ type V1UsersAdvanceListGet200Response struct {
 type V1UsersAdvanceListGet200ResponseUsersInner struct {
     // 账号版本。 0：其他 1：商业版 2：企业版 3：教育版
     AccountVersion *int64 `json:"account_version,omitempty"`
+    // 增强会议体验：房间规模升级许可。 1：500方房间规模升级许可 2：1000方房间规模升级许可 3：2000方房间规模升级许可
+    AddOnLargemeeting *int64 `json:"add_on_largemeeting,omitempty"`
+    // 增强会议体验：网络研讨会（Webinar）观众规模升级许可。 1：Webinar 观众规模提升至 300 观众 2：Webinar 观众规模提升至 500 观众 3：Webinar 观众规模提升至 1000 观众 4：Webinar 观众规模提升至 2000 观众 5：Webinar 观众规模提升至 3000 观众 6：Webinar 观众规模提升至 5000 观众 7：Webinar 观众规模提升至 8000 观众 8：Webinar 观众规模提升至 10000 观众
+    AddOnWebinar *int64 `json:"add_on_webinar,omitempty"`
     // AI 账号类型。 0：无账号 1：购买版 2：赠送版
     AiAccountType *int64 `json:"ai_account_type,omitempty"`
     // 手机区号
@@ -177,10 +205,14 @@ type V1UsersAdvanceListGet200ResponseUsersInner struct {
     DepartmentList []V1UsersAdvanceListGet200ResponseUsersInnerDepartmentListInner `json:"department_list,omitempty"`
     // 邮箱
     Email *string `json:"email,omitempty"`
+    // 邮箱验证状态： 1：已验证 2：未验证
+    EmailStatus *int64 `json:"email_status,omitempty"`
     // 是否有 AI 账号能力。 true：有  false：无  教育版/企业版存在有 AI 账号，商业版都具有 AI 能力，其余为 false。
     EnableAiAccount *bool `json:"enable_ai_account,omitempty"`
     // 入职时间
     EntryTime *string `json:"entry_time,omitempty"`
+    // 是否为 VooV Meeting 客户端（国际账号），默认为0。 0：否 1：是
+    IsVoov *int64 `json:"is_voov,omitempty"`
     // 员工职位
     JobTitle *string `json:"job_title,omitempty"`
     // 手机号
@@ -197,14 +229,12 @@ type V1UsersAdvanceListGet200ResponseUsersInner struct {
     Status *string `json:"status,omitempty"`
     // 更新时间
     UpdateTime *string `json:"update_time,omitempty"`
-    // 账号类型。 1：高级账号（企业版/教育版） 2：免费账号（企业版/教育版） 3：免费账号100方 （商业版） 4：高级账号300方（商业版） 5：高级账号500方（商业版） 6：高级账号1000方（商业版） 7：高级账号2000方（商业版） 8：高级账号100方（商业版）
+    // 账号类型。 1：高级账号（企业版/教育版） 2：免费账号（企业版/教育版） 3：免费账号100方 （商业版） 4：高级账号300方（商业版） 5：高级账号500方（商业版） 6：高级账号1000方（商业版） 7：高级账号2000方（商业版） 8：高级账号100方（商业版）9：高级账号（企业版/教育版/商业版）
     UserAccountType *int64 `json:"user_account_type,omitempty"`
     // 用户userid
     Userid *string `json:"userid,omitempty"`
     // 用户名称
     Username *string `json:"username,omitempty"`
-    // 用户uuid
-    Uuid *string `json:"uuid,omitempty"`
 }
 
 // V1UsersAdvanceListGet200ResponseUsersInnerDepartmentListInner struct for V1UsersAdvanceListGet200ResponseUsersInnerDepartmentListInner
@@ -290,17 +320,25 @@ type V1UsersInfoBasicGet200Response struct {
     AccountType *int64 `json:"account_type,omitempty"`
     // 商企版计费需求，账号版本
     AccountVersion *int64 `json:"account_version,omitempty"`
+    // 增强会议体验：房间规模升级许可。 1：500方房间规模升级许可 2：1000方房间规模升级许可 3：2000方房间规模升级许可
+    AddOnLargemeeting *int64 `json:"add_on_largemeeting,omitempty"`
+    // 增强会议体验：网络研讨会（Webinar）观众规模升级许可。 1：Webinar 观众规模提升至 300 观众 2：Webinar 观众规模提升至 500 观众 3：Webinar 观众规模提升至 1000 观众 4：Webinar 观众规模提升至 2000 观众 5：Webinar 观众规模提升至 3000 观众 6：Webinar 观众规模提升至 5000 观众 7：Webinar 观众规模提升至 8000 观众 8：Webinar 观众规模提升至 10000 观众
+    AddOnWebinar *int64 `json:"add_on_webinar,omitempty"`
     // AI账号类型 1:购买版 2:赠送版
     AiAccountType *int64 `json:"ai_account_type,omitempty"`
     AvatarUrl *string `json:"avatar_url,omitempty"`
+    // 邮箱验证状态。 1：已验证 2：未验证
+    EmailStatus *int64 `json:"email_status,omitempty"`
     // 是否有AI账号能力，true：有， false：无，教育版/企业版存在ai账号，商业版都是ai账号，其余为false
     EnableAiAccount *bool `json:"enable_ai_account,omitempty"`
+    // 是否为 VooV Meeting 客户端（国际账号），默认为0。 0：否 1：是
+    IsVoov *int64 `json:"is_voov,omitempty"`
     OpenCorpId *string `json:"open_corp_id,omitempty"`
     OpenCorpName *string `json:"open_corp_name,omitempty"`
     // 手机号验证状态。 0：未知 1：已验证 2：未验证
     PhoneStatus *int64 `json:"phone_status,omitempty"`
     Status *string `json:"status,omitempty"`
-    // 账号类型 1：高级账号  2：免费账号  3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方
+    // 账号类型 1：高级账号  2：免费账号  3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方 8：高级账号100方（商业版） 9：高级账号（企业版/教育版/商业版）
     UserAccountType *int64 `json:"user_account_type,omitempty"`
     Username *string `json:"username,omitempty"`
 }
@@ -459,16 +497,21 @@ type V1UsersPost200Response struct {
     Phone *string `json:"phone,omitempty"`
     Userid *string `json:"userid,omitempty"`
     Username *string `json:"username,omitempty"`
-    Uuid *string `json:"uuid,omitempty"`
 }
 
 // V1UsersPostRequest struct for V1UsersPostRequest
 type V1UsersPostRequest struct {
+    // 增强会议体验：房间规模升级许可。 0：回收房间规模升级许可 1：500方房间规模升级许可 2：1000方房间规模升级许可 3：2000方房间规模升级许可
+    AddOnLargemeeting *int64 `json:"add_on_largemeeting,omitempty"`
+    // 增强会议体验：网络研讨会（Webinar）观众规模升级许可。 0：回收 Webinar 观众规模升级许可 1：Webinar 观众规模提升至 300 观众 2：Webinar 观众规模提升至 500 观众 3：Webinar 观众规模提升至 1000 观众 4：Webinar 观众规模提升至 2000 观众 5：Webinar 观众规模提升至 3000 观众 6：Webinar 观众规模提升至 5000 观众 7：Webinar 观众规模提升至 8000 观众 8：Webinar 观众规模提升至 10000 观众
+    AddOnWebinar *int64 `json:"add_on_webinar,omitempty"`
     Area *string `json:"area,omitempty"`
     // 自动发送邀请，开启之后调用接口后自动发送激活邀请 true：开启，默认开启;false：关闭
     AutoInvite *bool `json:"auto_invite,omitempty"`
     Email *string `json:"email,omitempty"`
     EntryTime *int64 `json:"entry_time,omitempty"`
+    // 是否为voov用户， 0:否  1:是
+    IsVoov *int64 `json:"is_voov,omitempty"`
     JobTitle *string `json:"job_title,omitempty"`
     // 操作者ID
     OperatorId string `json:"operator_id"`
@@ -476,7 +519,7 @@ type V1UsersPostRequest struct {
     OperatorIdType int64 `json:"operator_id_type"`
     Phone string `json:"phone"`
     StaffId *string `json:"staff_id,omitempty"`
-    // 1：高级账号  2：免费账号  3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方     其中企业版/教育版：1，2 。免费组织 2。 商业版：2-7      根据传入的参数判断是否有该类型账号，没有则报错。创建成功即锁定该账号资源。默认值：商业版默认为高级账号，绑定资源为由小到大，资源消耗完账号为免费账号，企业版-高级账号
+    // 1：高级账号  2：免费账号  3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方    8：高级账号100方（商业版） 9：高级账号（企业版/教育版/商业版）其中旧商业版：企业版/教育版：1，2 。免费组织 2。 商业版：2-7      新商业版：免费账号：2，高级账号：9。
     UserAccountType *int64 `json:"user_account_type,omitempty"`
     Userid string `json:"userid"`
     Username string `json:"username"`
@@ -514,15 +557,23 @@ type V1UsersUseridGet200Response struct {
     AccountType *int64 `json:"account_type,omitempty"`
     // 账号版本
     AccountVersion *int64 `json:"account_version,omitempty"`
+    // 增强会议体验：房间规模升级许可。 1：500方房间规模升级许可 2：1000方房间规模升级许可 3：2000方房间规模升级许可
+    AddOnLargemeeting *int64 `json:"add_on_largemeeting,omitempty"`
+    // 增强会议体验：网络研讨会（Webinar）观众规模升级许可。 1：Webinar 观众规模提升至 300 观众 2：Webinar 观众规模提升至 500 观众 3：Webinar 观众规模提升至 1000 观众 4：Webinar 观众规模提升至 2000 观众 5：Webinar 观众规模提升至 3000 观众 6：Webinar 观众规模提升至 5000 观众 7：Webinar 观众规模提升至 8000 观众 8：Webinar 观众规模提升至 10000 观众
+    AddOnWebinar *int64 `json:"add_on_webinar,omitempty"`
     // ai账号类型 1:购买版 2:赠送版
     AiAccountType *int64 `json:"ai_account_type,omitempty"`
     Area *string `json:"area,omitempty"`
     AvatarUrl *string `json:"avatar_url,omitempty"`
     DepartmentList []V1UsersUseridGet200ResponseDepartmentListInner `json:"department_list,omitempty"`
     Email *string `json:"email,omitempty"`
+    // 邮箱验证状态： 1：已验证 2：未验证
+    EmailStatus *int64 `json:"email_status,omitempty"`
     // 是否有ai账号能力，true：有，false：无
     EnableAiAccount *bool `json:"enable_ai_account,omitempty"`
     EntryTime *string `json:"entry_time,omitempty"`
+    // 是否为 VooV Meeting 客户端（国际账号），默认为0。 0：否 1：是
+    IsVoov *int64 `json:"is_voov,omitempty"`
     JobTitle *string `json:"job_title,omitempty"`
     Phone *string `json:"phone,omitempty"`
     // 手机号验证状态。 0：未知 1：已验证 2：未验证
@@ -532,7 +583,7 @@ type V1UsersUseridGet200Response struct {
     StaffId *string `json:"staff_id,omitempty"`
     Status *string `json:"status,omitempty"`
     UpdateTime *string `json:"update_time,omitempty"`
-    //  1：高级账号  2：免费账号  3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方
+    //  1：高级账号  2：免费账号  3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方8：高级账号100方（商业版） 9：高级账号（企业版/教育版/商业版）
     UserAccountType *int64 `json:"user_account_type,omitempty"`
     Userid *string `json:"userid,omitempty"`
     Username *string `json:"username,omitempty"`
@@ -541,8 +592,10 @@ type V1UsersUseridGet200Response struct {
 
 // V1UsersUseridGet200ResponseDepartmentListInner struct for V1UsersUseridGet200ResponseDepartmentListInner
 type V1UsersUseridGet200ResponseDepartmentListInner struct {
+    DepartmentFullName *string `json:"department_full_name,omitempty"`
     DepartmentId *string `json:"department_id,omitempty"`
     DepartmentName *string `json:"department_name,omitempty"`
+    IsMain *bool `json:"is_main,omitempty"`
 }
 
 // V1UsersUseridInviteAuthPutRequest struct for V1UsersUseridInviteAuthPutRequest
@@ -555,10 +608,16 @@ type V1UsersUseridInviteAuthPutRequest struct {
 
 // V1UsersUseridPutRequest struct for V1UsersUseridPutRequest
 type V1UsersUseridPutRequest struct {
+    // 增强会议体验：房间规模升级许可。 0：回收房间规模升级许可 1：500方房间规模升级许可 2：1000方房间规模升级许可 3：2000方房间规模升级许可
+    AddOnLargemeeting *int64 `json:"add_on_largemeeting,omitempty"`
+    // 增强会议体验：网络研讨会（Webinar）观众规模升级许可。 0：回收 Webinar 观众规模升级许可 1：Webinar 观众规模提升至 300 观众 2：Webinar 观众规模提升至 500 观众 3：Webinar 观众规模提升至 1000 观众 4：Webinar 观众规模提升至 2000 观众 5：Webinar 观众规模提升至 3000 观众 6：Webinar 观众规模提升至 5000 观众 7：Webinar 观众规模提升至 8000 观众 8：Webinar 观众规模提升至 10000 观众
+    AddOnWebinar *int64 `json:"add_on_webinar,omitempty"`
     Area *string `json:"area,omitempty"`
     AvatarUrl *string `json:"avatar_url,omitempty"`
     Email *string `json:"email,omitempty"`
     EntryTime *int64 `json:"entry_time,omitempty"`
+    // 是否为voov用户，默认为0  0:否  1:是
+    IsVoov *int64 `json:"is_voov,omitempty"`
     JobTitle *string `json:"job_title,omitempty"`
     // 操作者ID
     OperatorId string `json:"operator_id"`
@@ -566,7 +625,7 @@ type V1UsersUseridPutRequest struct {
     OperatorIdType int64 `json:"operator_id_type"`
     Phone *string `json:"phone,omitempty"`
     StaffId *string `json:"staff_id,omitempty"`
-    // 1：高级账号 2：免费账号 3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方 其中企业版/教育版：1，2 。免费组织 2。 商业版：2-7 根据传入的参数判断是否有该类型账号，没有则报错。更新后，原类型账号资源释放。
+    // 1：高级账号 2：免费账号 3：免费账号100方 4:高级账号300方，5:高级账号500方，6：高级账号1000方，7:高级账号2000方 8：高级账号100方（商业版） 9：高级账号（企业版/教育版/商业版）其中企业版/教育版：1，2 。免费组织 2。 商业版：2-7 ，新商业版：免费账号：2，高级账号：9。根据传入的参数判断是否有该类型账号，没有则报错。更新后，原类型账号资源释放。
     UserAccountType *int64 `json:"user_account_type,omitempty"`
     Userid *string `json:"userid,omitempty"`
     Username *string `json:"username,omitempty"`

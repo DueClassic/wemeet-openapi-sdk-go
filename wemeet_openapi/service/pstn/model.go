@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -16,15 +16,26 @@ type V1MeetingMeetingIdPhoneCalloutPost200Response struct {
     // 会议的唯一ID
     MeetingId *string `json:"meeting_id,omitempty"`
     // 外呼的电话号码对象列表。
-    PhoneNumbers []V1MeetingMeetingIdPhoneCalloutPost200ResponseInvalidPhoneNumbersInner `json:"phone_numbers,omitempty"`
+    PhoneNumbers []V1MeetingMeetingIdPhoneCalloutPost200ResponsePhoneNumbersInner `json:"phone_numbers,omitempty"`
 }
 
 // V1MeetingMeetingIdPhoneCalloutPost200ResponseInvalidPhoneNumbersInner 电话号码对象
 type V1MeetingMeetingIdPhoneCalloutPost200ResponseInvalidPhoneNumbersInner struct {
     // 电话区号
     Area *int64 `json:"area,omitempty"`
+    // 错误信息
+    ErrorMsg *string `json:"error_msg,omitempty"`
     ExtensionNumber *string `json:"extension_number,omitempty"`
     Phone *string `json:"phone,omitempty"`
+}
+
+// V1MeetingMeetingIdPhoneCalloutPost200ResponsePhoneNumbersInner 电话号码对象
+type V1MeetingMeetingIdPhoneCalloutPost200ResponsePhoneNumbersInner struct {
+    // 电话区号
+    Area *int64 `json:"area,omitempty"`
+    ExtensionNumber *string `json:"extension_number,omitempty"`
+    Phone *string `json:"phone,omitempty"`
+    Status *string `json:"status,omitempty"`
 }
 
 // V1MeetingMeetingIdPhoneCalloutPostRequest struct for V1MeetingMeetingIdPhoneCalloutPostRequest
@@ -41,10 +52,6 @@ type V1MeetingMeetingIdPhoneCalloutPostRequest struct {
 type V1MeetingMeetingIdPhoneCalloutPostRequestPhoneNumbersInner struct {
     // 电话区号
     Area int64 `json:"area"`
-    // 国家/地区代码。（例如：中国是86） 当前仅支持呼叫中国大陆、中国香港、美国的号码。
-    CallingPartyArea *int64 `json:"calling_party_area,omitempty"`
-    // 电话号码或固定电话总机号。
-    CallingPartyPhoneNumber *string `json:"calling_party_phone_number,omitempty"`
     ExtensionNumber *string `json:"extension_number,omitempty"`
     NickName *string `json:"nick_name,omitempty"`
     Phone string `json:"phone"`

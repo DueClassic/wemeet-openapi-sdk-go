@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -157,14 +157,16 @@ type V1MeetingRoomsMeetingRoomIdGet200ResponseAccountInfo struct {
     AccountNewType *int64 `json:"account_new_type,omitempty"`
     // 账号类型，0：普通 1：专款 2：试用
     AccountType *int64 `json:"account_type,omitempty"`
-    // 1-预装 2-体验 3-付费
-    ProAccountType *int64 `json:"pro_account_type,omitempty"`
     // 有效期限
     ValidPeriod *string `json:"valid_period,omitempty"`
 }
 
 // V1MeetingRoomsMeetingRoomIdGet200ResponseBasicInfo 会议室基本信息
 type V1MeetingRoomsMeetingRoomIdGet200ResponseBasicInfo struct {
+    // 管理员密码（base64编码）。 当 admin_password_enabled 为 false 时，则此键值对不返回。
+    AdminPassword *string `json:"admin_password,omitempty"`
+    // 管理员密码启用状态。 true：已启用  false：未启用
+    AdminPasswordEnabled *bool `json:"admin_password_enabled,omitempty"`
     // 建筑
     Building *string `json:"building,omitempty"`
     // 城市
@@ -179,8 +181,6 @@ type V1MeetingRoomsMeetingRoomIdGet200ResponseBasicInfo struct {
     MeetingRoomName *string `json:"meeting_room_name,omitempty"`
     // 容纳人数
     ParticipantNumber *int64 `json:"participant_number,omitempty"`
-    // 管理员密码（base64）
-    Password *string `json:"password,omitempty"`
 }
 
 // V1MeetingRoomsMeetingRoomIdGet200ResponseHardwareInfo 会议室硬件信息
@@ -255,6 +255,10 @@ type V1MeetingRoomsModifyPutRequest struct {
 
 // V1MeetingRoomsModifyPutRequestMeetingRoomInfo 编辑会议室基本信息
 type V1MeetingRoomsModifyPutRequestMeetingRoomInfo struct {
+    // 配置管理员密码。 格式要求：输入应为1 - 16位的数字、字母或字符。 依赖说明：若启用管理员密码，此密码不可为空；若不启用，此密码无需输入。
+    AdminPassword *string `json:"admin_password,omitempty"`
+    // 会议室类型为1时，可选择是否启用管理员密码。 true：启用  false：不启用（默认值）
+    AdminPasswordEnabled *bool `json:"admin_password_enabled,omitempty"`
     // 建筑。若非输入城市下现有建筑则自动创建该建筑与楼层。长度不超过36个字符或18个汉字。
     Building *string `json:"building,omitempty"`
     // 城市。若非已添加城市则自动创建城市及建筑与楼层。长度不超过36个字符或18个汉字。city、building、floor 需同时传入或都不传入。
@@ -275,10 +279,6 @@ type V1MeetingRoomsModifyPutRequestMeetingRoomInfo struct {
     MraRegisterAccount *string `json:"mra_register_account,omitempty"`
     // 容纳人数。不超过9位数。
     ParticipantNumber *int64 `json:"participant_number,omitempty"`
-    // 使用管理员密码时必须填写管理员密码（base64）。若不使用密码，该字段无效。输入应为1-16位的数字、字母或字符。
-    Password *string `json:"password,omitempty"`
-    // 会议室类型为1时选择是否使用管理员密码，默认为 false。 true：使用 false：不使用
-    UsePassword *bool `json:"use_password,omitempty"`
 }
 
 // V1MeetingRoomsModifyRoomConfigInfoPostRequest struct for V1MeetingRoomsModifyRoomConfigInfoPostRequest
@@ -428,6 +428,7 @@ type V1MeetingRoomsRoomCallInfoPostRequest struct {
 type V1MeetingRoomsRoomCallPut200Response struct {
     // 呼叫ID
     InviteId *string `json:"invite_id,omitempty"`
+    Status *int64 `json:"status,omitempty"`
 }
 
 // V1MeetingRoomsRoomCallPutRequest struct for V1MeetingRoomsRoomCallPutRequest
@@ -539,6 +540,14 @@ type V1MeetingsMeetingIdBookRoomsPostRequest struct {
     OperatorIdType int64 `json:"operator_id_type"`
     // true：在会议开始前的一小时内，在 Room 上显示会议主题。默认值为 true。 false：在会议开始前的一小时内，在 Room 上不显示会议主题。 说明：该参数并不影响预定时间晚过当前时间一个小时以上的会议。超过一小时的会议默认不显示会议主题。
     SubjectVisible *bool `json:"subject_visible,omitempty"`
+}
+
+// V1MeetingsMeetingIdReleaseRoomsPostRequest struct for V1MeetingsMeetingIdReleaseRoomsPostRequest
+type V1MeetingsMeetingIdReleaseRoomsPostRequest struct {
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId string `json:"operator_id"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType int64 `json:"operator_id_type"`
 }
 
 // V1RoomsInventoryAccountStatisticsGet200Response struct for V1RoomsInventoryAccountStatisticsGet200Response

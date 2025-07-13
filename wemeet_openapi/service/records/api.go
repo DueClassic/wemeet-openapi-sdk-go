@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -239,13 +239,10 @@ type ApiV1AddressesGetRequest struct {
     OperatorId *string `json:"-"`
     // 操作者ID的类型 3为rooms_id 必须与operator_id_type 同时提供
     OperatorIdType *string `json:"-"`
-    // 用户 ID（企业内部请使用企业唯一用户标识；OAuth2.0 鉴权用户请使用 openId）。
-    Userid *string `json:"-"`
     // 分页size
     PageSize *string `json:"-"`
     // 分页page
     Page *string `json:"-"`
-    AddressType *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -277,6 +274,14 @@ func (s *recordsAPIService) V1AddressesGet(ctx context.Context, request *ApiV1Ad
         return nil, fmt.Errorf("meeting_record_id is required and must be specified")
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     // query 参数
     if request.MeetingRecordId != nil {
@@ -288,17 +293,11 @@ func (s *recordsAPIService) V1AddressesGet(ctx context.Context, request *ApiV1Ad
     if request.OperatorIdType != nil {
         apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
     }
-    if request.Userid != nil {
-        apiReq.QueryParams.Set("userid", core.QueryValue(request.Userid))
-    }
     if request.PageSize != nil {
         apiReq.QueryParams.Set("page_size", core.QueryValue(request.PageSize))
     }
     if request.Page != nil {
         apiReq.QueryParams.Set("page", core.QueryValue(request.Page))
-    }
-    if request.AddressType != nil {
-        apiReq.QueryParams.Set("address_type", core.QueryValue(request.AddressType))
     }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
@@ -344,9 +343,6 @@ type ApiV1AddressesRecordFileIdGetRequest struct {
     OperatorId *string `json:"-"`
     // 操作者ID的类型 rooms_Id是3，必须与operator_id同时出现。
     OperatorIdType *string `json:"-"`
-    // 用户 ID（企业内部请使用企业唯一用户标识；OAuth2.0 鉴权用户请使用 openId）。
-    Userid *string `json:"-"`
-    AddressType *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -369,6 +365,14 @@ func (s *recordsAPIService) V1AddressesRecordFileIdGet(ctx context.Context, requ
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     apiReq.PathParams.Set("record_file_id", core.PathValue(request.RecordFileId))
     // query 参数
@@ -377,12 +381,6 @@ func (s *recordsAPIService) V1AddressesRecordFileIdGet(ctx context.Context, requ
     }
     if request.OperatorIdType != nil {
         apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
-    }
-    if request.Userid != nil {
-        apiReq.QueryParams.Set("userid", core.QueryValue(request.Userid))
-    }
-    if request.AddressType != nil {
-        apiReq.QueryParams.Set("address_type", core.QueryValue(request.AddressType))
     }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
@@ -1097,14 +1095,12 @@ func (s *recordsAPIService) V1RecordsApprovalsMeetingRecordIdPut(ctx context.Con
 type ApiV1RecordsDeleteRequest struct {
     // 会议录制 ID。
     MeetingRecordId *string `json:"-"`
-    // 会议 ID。
-    MeetingId *string `json:"-"`
     // 操作者ID，根据operator_id_type的值，使用不同的类型
     OperatorId *string `json:"-"`
     // 操作者ID的类型，必须与operator_id同时出现
     OperatorIdType *string `json:"-"`
-    // 用户 ID（企业内部请使用企业唯一用户标识；OAuth2.0 鉴权用户请使用 openId）。
-    Userid *string `json:"-"`
+    // 会议 ID。
+    MeetingId *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -1132,6 +1128,14 @@ func (s *recordsAPIService) V1RecordsDelete(ctx context.Context, request *ApiV1R
         return nil, fmt.Errorf("meeting_record_id is required and must be specified")
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     // query 参数
     if request.MeetingId != nil {
@@ -1145,9 +1149,6 @@ func (s *recordsAPIService) V1RecordsDelete(ctx context.Context, request *ApiV1R
     }
     if request.OperatorIdType != nil {
         apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
-    }
-    if request.Userid != nil {
-        apiReq.QueryParams.Set("userid", core.QueryValue(request.Userid))
     }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
@@ -1423,14 +1424,12 @@ func (s *recordsAPIService) V1RecordsGet(ctx context.Context, request *ApiV1Reco
 type ApiV1RecordsRecordFileIdDeleteRequest struct {
     // 录制文件 ID。
     RecordFileId string `json:"-"`
-    // 会议 ID。
-    MeetingId *string `json:"-"`
     // 操作者ID，根据operator_id_type的值，使用不同的类型，必须与operator_id_type同时出现
     OperatorId *string `json:"-"`
     // 操作者ID的类型，必须与operator_id同时出现
     OperatorIdType *string `json:"-"`
-    // 用户 ID（企业内部请使用企业唯一用户标识；OAuth2.0 鉴权用户请使用 openId）。
-    Userid *string `json:"-"`
+    // 会议 ID。
+    MeetingId *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -1454,6 +1453,14 @@ func (s *recordsAPIService) V1RecordsRecordFileIdDelete(ctx context.Context, req
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     apiReq.PathParams.Set("record_file_id", core.PathValue(request.RecordFileId))
     // query 参数
@@ -1465,9 +1472,6 @@ func (s *recordsAPIService) V1RecordsRecordFileIdDelete(ctx context.Context, req
     }
     if request.OperatorIdType != nil {
         apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
-    }
-    if request.Userid != nil {
-        apiReq.QueryParams.Set("userid", core.QueryValue(request.Userid))
     }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc

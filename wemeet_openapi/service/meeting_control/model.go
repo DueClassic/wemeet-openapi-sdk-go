@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -45,6 +45,10 @@ type V1RealControlMeetingsMeetingIdAsrPutRequest struct {
     OperatorId string `json:"operator_id"`
     // 操作者 ID 的类型： 1：userid
     OperatorIdType int64 `json:"operator_id_type"`
+    // 目标 Rooms ID。 当 Rooms 为会议创建者时，需要填写此 Rooms ID。 target_rooms_id 需与 target_rooms_id_type 配合使用。
+    TargetRoomsId *string `json:"target_rooms_id,omitempty"`
+    // 目标 RoomsID 类型： 3：rooms 设备 rooms_id 5：会议室 ID meeting_room_id
+    TargetRoomsIdType *int64 `json:"target_rooms_id_type,omitempty"`
 }
 
 // V1RealControlMeetingsMeetingIdCohostsPutRequest struct for V1RealControlMeetingsMeetingIdCohostsPutRequest
@@ -106,8 +110,6 @@ type V1RealControlMeetingsMeetingIdKickoutPutRequestUsersInner struct {
     ToOperatorId *string `json:"to_operator_id,omitempty"`
     // 用户ID的类型： 4: ms_open_id
     ToOperatorIdType *int64 `json:"to_operator_id_type,omitempty"`
-    // 用户的唯一标识uuid
-    Uuid *string `json:"uuid,omitempty"`
 }
 
 // V1RealControlMeetingsMeetingIdMutesPutRequest struct for V1RealControlMeetingsMeetingIdMutesPutRequest
@@ -244,17 +246,5 @@ type V1RealControlMeetingsMeetingIdWaitingRoomPutRequest struct {
     // 操作者ID的类型： 2:openid 4: ms_open_id
     OperatorIdType *int64 `json:"operator_id_type,omitempty"`
     // 被操作用户对象信息列表
-    Users []V1RealControlMeetingsMeetingIdWaitingRoomPutRequestUsersInner `json:"users"`
-}
-
-// V1RealControlMeetingsMeetingIdWaitingRoomPutRequestUsersInner struct for V1RealControlMeetingsMeetingIdWaitingRoomPutRequestUsersInner
-type V1RealControlMeetingsMeetingIdWaitingRoomPutRequestUsersInner struct {
-    // 用户的终端设备类型： 0：PSTN 1：PC 2：Mac 3：Android 4：iOS 5：Web 6：iPad 7：Android Pad 8：小程序 9：voip、sip 设备 10：linux 20：Rooms for Touch Windows 21：Rooms for Touch MacOS 22：Rooms for Touch Android 30：Controller for Touch Windows 32：Controller for Touch Android 33：Controller for Touch iOS 说明：请与被操作者的设备类型保持一致，否则不生效。
-    Instanceid int64 `json:"instanceid"`
-    // 用户ID，根据to_operator_id_type的值，使用不同的类型
-    ToOperatorId *string `json:"to_operator_id,omitempty"`
-    // 用户ID的类型：  4: ms_open_id
-    ToOperatorIdType *int64 `json:"to_operator_id_type,omitempty"`
-    // 用户的唯一标识uuid
-    Uuid *string `json:"uuid,omitempty"`
+    Users []V1RealControlMeetingsMeetingIdMutesPutRequestUser `json:"users"`
 }

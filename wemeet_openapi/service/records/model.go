@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -61,7 +61,7 @@ type V1AddressesGet200ResponseRecordFilesInnerMeetingSummaryInner struct {
 type V1AddressesRecordFileIdGet200Response struct {
     // 录制转写文件（智能优化版）列表。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。
     AiMeetingTranscripts []V1AddressesRecordFileIdGet200ResponseAiMeetingTranscriptsInner `json:"ai_meeting_transcripts,omitempty"`
-    // 智能纪要列表。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。
+    // 智能纪要列表。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。 注：如会议录制不允许导出或被关闭下载，则不出现在此返回结果中。
     AiMinutes []V1AddressesRecordFileIdGet200ResponseAiMeetingTranscriptsInner `json:"ai_minutes,omitempty"`
     // 音频下载地址。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。
     AudioAddress *string `json:"audio_address,omitempty"`
@@ -345,12 +345,10 @@ type V1RecordsSettingsMeetingRecordIdPutRequest struct {
     // 会议id
     MeetingId *string `json:"meeting_id,omitempty"`
     // 操作者ID
-    OperatorId *string `json:"operator_id,omitempty"`
+    OperatorId string `json:"operator_id"`
     // 操作者ID的类型。3. rooms_id 说明：当前仅支持 rooms_id。如操作者为企业内 userid 或 openId，请使用 userid 字段。
-    OperatorIdType *int64 `json:"operator_id_type,omitempty"`
+    OperatorIdType int64 `json:"operator_id_type"`
     SharingConfig *V1RecordsSettingsMeetingRecordIdPutRequestSharingConfig `json:"sharing_config,omitempty"`
-    // 用户id。仅会议创建者、企业超级管理员或有企业录制管理权限的用户可调用。调用方用于标示用户的唯一 ID（企业内部请使用企业唯一用户标识；OAuth2.0 鉴权用户请使用 openId）。 企业唯一用户标识说明： 1. 企业对接 SSO 时使用的员工唯一标识 ID。 2. 企业调用创建用户接口时传递的 userid 参数。
-    Userid *string `json:"userid,omitempty"`
 }
 
 // V1RecordsSettingsMeetingRecordIdPutRequestSharingConfig struct for V1RecordsSettingsMeetingRecordIdPutRequestSharingConfig
@@ -430,6 +428,8 @@ type V1RecordsTranscriptsDetailsGet200ResponseMinutesParagraphsInnerSentencesInn
 
 // V1RecordsTranscriptsDetailsGet200ResponseMinutesParagraphsInnerSpeakerInfo 发言人信息对象。
 type V1RecordsTranscriptsDetailsGet200ResponseMinutesParagraphsInnerSpeakerInfo struct {
+    // 会议中为每个参会成员授予的临时 ID，以会议为维度，表示同一场会议内用户的唯一标识
+    MsOpenId *string `json:"ms_open_id,omitempty"`
     // 同企业返回企业用户 userid。
     Userid *string `json:"userid,omitempty"`
     // 昵称

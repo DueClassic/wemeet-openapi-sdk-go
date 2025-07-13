@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -1304,6 +1304,8 @@ func (s *meetingsAPIService) V1MeetingsMeetingIdCancelPost(ctx context.Context, 
 
 type ApiV1MeetingsMeetingIdCustomerShortUrlGetRequest struct {
     MeetingId string `json:"-"`
+    OperatorId *string `json:"-"`
+    OperatorIdType *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -1331,9 +1333,23 @@ func (s *meetingsAPIService) V1MeetingsMeetingIdCustomerShortUrlGet(ctx context.
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     apiReq.PathParams.Set("meeting_id", core.PathValue(request.MeetingId))
     // query 参数
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
+    }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
     for _, opt := range opts {
@@ -1927,12 +1943,12 @@ func (s *meetingsAPIService) V1MeetingsMeetingIdEnrollUnregistrationDelete(ctx c
 
 type ApiV1MeetingsMeetingIdGetRequest struct {
     MeetingId string `json:"-"`
-    // 用户的终端设备类型： 0：PSTN 1：PC 2：Mac 3：Android 4：iOS 5：Web 6：iPad 7：Android Pad 8：小程序 9：voip、sip 设备 10：linux 20：Rooms for Touch Windows 21：Rooms for Touch MacOS 22：Rooms for Touch Android 30：Controller for Touch Windows 32：Controller for Touch Android 33：Controller for Touch iOS
-    Instanceid *string `json:"-"`
     // 操作者ID，根据operator_id_type的值，使用不同的类型
     OperatorId *string `json:"-"`
     // 操作者ID的类型：1.userid 2.openid 3.rooms_id
     OperatorIdType *string `json:"-"`
+    // 用户的终端设备类型： 0：PSTN 1：PC 2：Mac 3：Android 4：iOS 5：Web 6：iPad 7：Android Pad 8：小程序 9：voip、sip 设备 10：linux 20：Rooms for Touch Windows 21：Rooms for Touch MacOS 22：Rooms for Touch Android 30：Controller for Touch Windows 32：Controller for Touch Android 33：Controller for Touch iOS
+    Instanceid *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -1957,6 +1973,14 @@ func (s *meetingsAPIService) V1MeetingsMeetingIdGet(ctx context.Context, request
         Body:        request.Body,
         PathParams:  xhttp.PathParams{},
         QueryParams: xhttp.QueryParams{},
+    }
+
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
     }
 
     if request.Instanceid == nil {

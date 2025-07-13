@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -27,6 +27,8 @@ type V1AsrConfigPutRequest struct {
     OperatorId string `json:"operator_id"`
     // 操作者ID类型 1:userid，2:openid
     OperatorIdType int64 `json:"operator_id_type"`
+    // 录制文件 ID，若仅传入 record_file_id，未传入 meeting_id，则热词仅对该录制文件生效。
+    RecordFileId *string `json:"record_file_id,omitempty"`
     // 自定义热词标签，便于热词分类，最多支持输入 32 个字符（中英文）
     Tag string `json:"tag"`
 }
@@ -55,6 +57,10 @@ type V1AsrPushStatusPostRequest struct {
     OperatorId string `json:"operator_id"`
     // 操作者ID类型： 1：userid 2:openid
     OperatorIdType int64 `json:"operator_id_type"`
+    // 目标 Rooms ID。 当 Rooms 为会议创建者时，需要填写此 Rooms ID。 target_rooms_id 需与 target_rooms_id_type 配合使用。
+    TargetRoomsId *string `json:"target_rooms_id,omitempty"`
+    // 目标 RoomsID 类型： 3：rooms 设备 rooms_id 5：会议室 ID meeting_room_id
+    TargetRoomsIdType *int64 `json:"target_rooms_id_type,omitempty"`
 }
 
 // V1HistoryMeetingsUseridGet200Response struct for V1HistoryMeetingsUseridGet200Response
@@ -184,6 +190,8 @@ type V1MeetingsCustomerShortUrlPostRequest struct {
     CustomerData string `json:"customer_data"`
     // 会议ID
     MeetingId string `json:"meeting_id"`
+    OperatorId string `json:"operator_id"`
+    OperatorIdType int64 `json:"operator_id_type"`
 }
 
 // V1MeetingsGet200Response struct for V1MeetingsGet200Response
@@ -546,7 +554,7 @@ type V1MeetingsMeetingIdEnrollIdsPostRequest struct {
     // 操作者 ID。会议创建者可以导入报名信息。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。 operator_id_type=2，operator_id 必须和公共参数的 openid 一致。 operator_id 和 userid 至少填写一个，两个参数如果都传了以 operator_id 为准。 使用 OAuth 公参鉴权后不能使用 userid 为入参。
     OperatorId string `json:"operator_id"`
     // 操作者 ID 的类型： 1：userid 2：open_id 如果 operator_id 和 userid 具有值，则以 operator_id 为准。
-    OperatorIdType *int64 `json:"operator_id_type,omitempty"`
+    OperatorIdType int64 `json:"operator_id_type"`
     // 查询报名 ID 的排序规则。当该账号存在多条报名记录（手机号导入、手动报名等）时，该接口返回的顺序。 1：优先查询手机号导入报名，再查询用户手动报名，默认值。 2：优先查询用户手动报名，再查手机号导入。
     SortingRules *int64 `json:"sorting_rules,omitempty"`
 }
@@ -636,8 +644,10 @@ type V1MeetingsMeetingIdGet200Response struct {
 
 // V1MeetingsMeetingIdGet200ResponseMeetingInfoListInner struct for V1MeetingsMeetingIdGet200ResponseMeetingInfoListInner
 type V1MeetingsMeetingIdGet200ResponseMeetingInfoListInner struct {
-    CurrentCoHosts []V1MeetingsGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"current_co_hosts,omitempty"`
-    CurrentHosts []V1MeetingsGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"current_hosts,omitempty"`
+    // 混合云企业会返回
+    AllowEnterpriseIntranetOnly *bool `json:"allow_enterprise_intranet_only,omitempty"`
+    CurrentCoHosts []V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"current_co_hosts,omitempty"`
+    CurrentHosts []V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"current_hosts,omitempty"`
     CurrentSubMeetingId *string `json:"current_sub_meeting_id,omitempty"`
     EnableDocUploadPermission *bool `json:"enable_doc_upload_permission,omitempty"`
     EnableEnroll *bool `json:"enable_enroll,omitempty"`
@@ -648,15 +658,17 @@ type V1MeetingsMeetingIdGet200ResponseMeetingInfoListInner struct {
     HasMoreSubMeeting *int64 `json:"has_more_sub_meeting,omitempty"`
     HasVote *bool `json:"has_vote,omitempty"`
     HostKey *string `json:"host_key,omitempty"`
-    Hosts []V1MeetingsGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"hosts,omitempty"`
+    Hosts []V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"hosts,omitempty"`
     JoinUrl *string `json:"join_url,omitempty"`
     LiveConfig *V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerLiveConfig `json:"live_config,omitempty"`
     Location *string `json:"location,omitempty"`
+    // 0：公网会议，1:专网会议，混合云企业返回
+    MediaSetType *int64 `json:"media_set_type,omitempty"`
     MeetingCode *string `json:"meeting_code,omitempty"`
     MeetingId *string `json:"meeting_id,omitempty"`
     MeetingType *int64 `json:"meeting_type,omitempty"`
     NeedPassword *bool `json:"need_password,omitempty"`
-    Participants []V1MeetingsGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"participants,omitempty"`
+    Participants []V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerCurrentCoHostsInner `json:"participants,omitempty"`
     Password *string `json:"password,omitempty"`
     RecurringRule *V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerRecurringRule `json:"recurring_rule,omitempty"`
     RemainSubMeetings *int64 `json:"remain_sub_meetings,omitempty"`
@@ -668,6 +680,13 @@ type V1MeetingsMeetingIdGet200ResponseMeetingInfoListInner struct {
     SyncToWework *bool `json:"sync_to_wework,omitempty"`
     TimeZone *string `json:"time_zone,omitempty"`
     Type *int64 `json:"type,omitempty"`
+}
+
+// V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerCurrentCoHostsInner struct for V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerCurrentCoHostsInner
+type V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerCurrentCoHostsInner struct {
+    OperatorId *string `json:"operator_id,omitempty"`
+    OperatorIdType *int64 `json:"operator_id_type,omitempty"`
+    Userid *string `json:"userid,omitempty"`
 }
 
 // V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerLiveConfig struct for V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerLiveConfig
@@ -695,18 +714,22 @@ type V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerRecurringRule struct {
 // V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerSettings struct for V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerSettings
 type V1MeetingsMeetingIdGet200ResponseMeetingInfoListInnerSettings struct {
     AllowInBeforeHost *bool `json:"allow_in_before_host,omitempty"`
+    // 是否允许多端入会
+    AllowMultiDevice *bool `json:"allow_multi_device,omitempty"`
     AllowScreenSharedWatermark *bool `json:"allow_screen_shared_watermark,omitempty"`
     AllowUnmuteSelf *bool `json:"allow_unmute_self,omitempty"`
+    // 开启自动转写的会议默认不开启 true：开启 false：不开启
+    AutoAsr *bool `json:"auto_asr,omitempty"`
     AutoInWaitingRoom *bool `json:"auto_in_waiting_room,omitempty"`
     AutoRecordType *string `json:"auto_record_type,omitempty"`
-    // 是否允许用户自己改名 1:允许用户自己改名，2:不允许用户自己改名，默认为1
-    ChangeNickname *int64 `json:"change_nickname,omitempty"`
     EnableHostPauseAutoRecord *bool `json:"enable_host_pause_auto_record,omitempty"`
     MuteEnableJoin *bool `json:"mute_enable_join,omitempty"`
     MuteEnableTypeJoin *int64 `json:"mute_enable_type_join,omitempty"`
     OnlyAllowEnterpriseUserJoin *bool `json:"only_allow_enterprise_user_join,omitempty"`
     // 成员入会限制，1：所有成员可入会，2：仅受邀成员可入会，3：仅企业内部成员可入会 ；当only_user_join_type和only_allow_enterprise_user_join同时传的时候，以only_user_join_type为准
     OnlyUserJoinType *int64 `json:"only_user_join_type,omitempty"`
+    // 设置主持人入会是否自动打开转写侧边栏 在auto_asr为true下才会生效，true:开启转写 false：不开启
+    OpenAsrView *int64 `json:"open_asr_view,omitempty"`
     ParticipantJoinAutoRecord *bool `json:"participant_join_auto_record,omitempty"`
     WaterMarkType *int64 `json:"water_mark_type,omitempty"`
 }
@@ -787,6 +810,7 @@ type V1MeetingsMeetingIdParticipantsGet200ResponseParticipantsInner struct {
     Instanceid *int64 `json:"instanceid,omitempty"`
     // 用户的 IP 地址。当用户在会中时才能返回。
     Ip *string `json:"ip,omitempty"`
+    IsEnterpriseUser *bool `json:"is_enterprise_user,omitempty"`
     // 参会者加入会议时间戳（单位秒）。
     JoinTime *string `json:"join_time,omitempty"`
     // 入会方式： 0：PSTN 普通用户，标准的手机或固话类型 1：普通 VOIP 用户 2：附属投屏 VOIP 3：linux sdk for VOIP 4：附属语音 PSTN 5：附属视频 PSTN 6：linux sdk for PSTN
@@ -812,8 +836,6 @@ type V1MeetingsMeetingIdParticipantsGet200ResponseParticipantsInner struct {
     UserRole *int64 `json:"user_role,omitempty"`
     // 参会者用户 ID。 使用企业自建应用鉴权方式（JWT）时，该值为企业唯一用户标识。
     Userid *string `json:"userid,omitempty"`
-    // 用户的身份 ID，仅适用于单场会议。
-    Uuid *string `json:"uuid,omitempty"`
     // 摄像头状态： true：开启 false：关闭
     VideoState *bool `json:"video_state,omitempty"`
     // 网络研讨会成员角色： 0：普通参会角色 1：内部嘉宾 2：外部嘉宾 3：邀请链接入会嘉宾 4：观众 5：有音视频权限的研讨会观众
@@ -852,8 +874,8 @@ type V1MeetingsMeetingIdPut200ResponseMeetingInfoListInnerLiveConfig struct {
 type V1MeetingsMeetingIdPut200ResponseMeetingInfoListInnerSettings struct {
     // 是否允许用户自己改名 1:允许用户自己改名，2:不允许用户自己改名，默认为1
     ChangeNickname *int64 `json:"change_nickname,omitempty"`
-    // 是否仅受邀成员可入会，默认值为false，true：仅受邀成员可入会，false：所有成员可入会
-    OnlyInviteesAllowed *bool `json:"only_invitees_allowed,omitempty"`
+    // 成员入会限制，1：所有成员可入会，2：仅受邀成员可入会，3：仅企业内部成员可入会 ；当only_user_join_type和only_allow_enterprise_user_join同时传的时候，以only_user_join_type为准
+    OnlyUserJoinType *int64 `json:"only_user_join_type,omitempty"`
 }
 
 // V1MeetingsMeetingIdPutRequest struct for V1MeetingsMeetingIdPutRequest
@@ -964,6 +986,8 @@ type V1MeetingsMeetingIdPutRequestSettings struct {
     AllowScreenSharedWatermark *bool `json:"allow_screen_shared_watermark,omitempty"`
     // 允许参会者取消静音，默认值为 true。 true：开启 false：关闭
     AllowUnmuteSelf *bool `json:"allow_unmute_self,omitempty"`
+    // 是否开启自动转写（只给好未来开了）
+    AutoAsr *bool `json:"auto_asr,omitempty"`
     // 是否开启等候室，默认值为 false。 true：开启 false：不开启
     AutoInWaitingRoom *bool `json:"auto_in_waiting_room,omitempty"`
     // 自动录制类型： none：禁用，代表不开启自动会议录制。 local：本地录制，代表主持人入会后自动开启本地录制。 cloud：云录制，代表主持人入会后自动开启云录制。 说明： 该参数依赖企业账户设置，当企业强制锁定后，该参数必须与企业配置保持一致。 仅客户端2.7及以上版本可生效。
@@ -978,8 +1002,10 @@ type V1MeetingsMeetingIdPutRequestSettings struct {
     MuteEnableTypeJoin *int64 `json:"mute_enable_type_join,omitempty"`
     // 是否仅企业内部成员可入会，默认值为 false。 true：仅企业内部用户可入会 false：所有人可入会
     OnlyEnterpriseUserAllowed *bool `json:"only_enterprise_user_allowed,omitempty"`
-    // 是否仅受邀成员可入会，默认值为false，true：仅受邀成员可入会，false：所有成员可入会
-    OnlyInviteesAllowed *bool `json:"only_invitees_allowed,omitempty"`
+    // 成员入会限制，1：所有成员可入会，2：仅受邀成员可入会，3：仅企业内部成员可入会 ；当only_user_join_type和only_allow_enterprise_user_join同时传的时候，以only_user_join_type为准
+    OnlyUserJoinType *int64 `json:"only_user_join_type,omitempty"`
+    // 设置主持人入会是否自动打开转写侧边栏 在auto_asr为true下才会生效，true:开启转写 false：不开启
+    OpenAsrView *int64 `json:"open_asr_view,omitempty"`
     // 当有参会成员入会时立即开启云录制，默认值为 false 关闭，关闭时，主持人入会自动开启云录制；当设置为开启时，则有参会成员入会自动开启云录制。 说明： 该参数必须 auto_record_type 设置为“cloud”时才生效，该参数依赖企业账户设置，当企业强制锁定后，该参数必须与企业配置保持一致。 仅客户端2.7及以上版本生效。
     ParticipantJoinAutoRecord *bool `json:"participant_join_auto_record,omitempty"`
     // 有新的与会者加入时播放提示音
@@ -1250,8 +1276,6 @@ type V1MeetingsMeetingIdWaitingRoomParticipantsGet200ResponseParticipantsInner s
     UserName *string `json:"user_name,omitempty"`
     // 等候室成员用户 ID
     Userid *string `json:"userid,omitempty"`
-    // 用户的唯一标识uuid
-    Uuid *string `json:"uuid,omitempty"`
 }
 
 // V1MeetingsPost200Response struct for V1MeetingsPost200Response
@@ -1315,12 +1339,6 @@ type V1MeetingsPost200ResponseMeetingInfoListInnerHostsInner struct {
     IsAnonymous *bool `json:"is_anonymous,omitempty"`
     // 用户匿名字符串。如果字段“is_anonymous”设置为“true”，但是无指定匿名字符串, 会议将分配缺省名称，例如 “会议用户xxxx”，其中“xxxx”为随机数字
     NickName *string `json:"nick_name,omitempty"`
-    // 操作者ID，根据operator_id_type的值，使用不同的类型
-    OperatorId *string `json:"operator_id,omitempty"`
-    // 操作者ID的类型：1:userid  2:openid 3:rooms_id  4: ms_open_id
-    OperatorIdType *int64 `json:"operator_id_type,omitempty"`
-    // 头像地址
-    ProfilePhoto *string `json:"profile_photo,omitempty"`
     Userid *string `json:"userid,omitempty"`
 }
 
@@ -1353,12 +1371,6 @@ type V1MeetingsPost200ResponseMeetingInfoListInnerParticipantsInner struct {
     IsAnonymous *bool `json:"is_anonymous,omitempty"`
     // 用户匿名字符串。如果字段“is_anonymous”设置为“true”，但是无指定匿名字符串, 会议将分配缺省名称，例如 “会议用户xxxx”，其中“xxxx”为随机数字
     NickName *string `json:"nick_name,omitempty"`
-    // 操作者ID，根据operator_id_type的值，使用不同的类型
-    OperatorId *string `json:"operator_id,omitempty"`
-    // 操作者ID的类型：1:userid  2:openid 3:rooms_id  4: ms_open_id
-    OperatorIdType *int64 `json:"operator_id_type,omitempty"`
-    // 头像地址
-    ProfilePhoto *string `json:"profile_photo,omitempty"`
     Userid *string `json:"userid,omitempty"`
 }
 
@@ -1372,6 +1384,8 @@ type V1MeetingsPost200ResponseMeetingInfoListInnerSettings struct {
     AllowScreenSharedWatermark *bool `json:"allow_screen_shared_watermark,omitempty"`
     // 静音自解除允许
     AllowUnmuteSelf *bool `json:"allow_unmute_self,omitempty"`
+    // 开启自动转写的会议默认不开启 true：开启 false：不开启
+    AutoAsr *bool `json:"auto_asr,omitempty"`
     // 开启等候室
     AutoInWaitingRoom *bool `json:"auto_in_waiting_room,omitempty"`
     // 自动录制类型，仅客户端2.7及以上版本生效 none：禁用 local：本地录制 cloud：云录制
@@ -1388,6 +1402,8 @@ type V1MeetingsPost200ResponseMeetingInfoListInnerSettings struct {
     OnlyEnterpriseUserAllowed *bool `json:"only_enterprise_user_allowed,omitempty"`
     // 成员入会限制，1：所有成员可入会，2：仅受邀成员可入会，3：仅企业内部成员可入会 ；当only_user_join_type和only_allow_enterprise_user_join同时传的时候，以only_user_join_type为准
     OnlyUserJoinType *int64 `json:"only_user_join_type,omitempty"`
+    // 设置主持人入会是否自动打开转写侧边栏 在auto_asr为true下才会生效，true:开启转写 false：不开启
+    OpenAsrView *int64 `json:"open_asr_view,omitempty"`
     // 当有参会成员入会时立即开启云录制，默认值为 false 关闭，关闭时，主持人入会自动开启云录制；当设置为开启时，则有参会成员入会自动开启云录制。
     ParticipantJoinAutoRecord *bool `json:"participant_join_auto_record,omitempty"`
     // 有新的与会者加入时播放提示音，暂不支持，可在客户端设置
@@ -1530,6 +1546,8 @@ type V1MeetingsPostRequestSettings struct {
     AllowScreenSharedWatermark *bool `json:"allow_screen_shared_watermark,omitempty"`
     // 允许参会者取消静音，默认值为 true。 true：开启 false：关闭
     AllowUnmuteSelf *bool `json:"allow_unmute_self,omitempty"`
+    // 入会后自动开启文字转写，默认为 false。 true：自动开启转写 false：自动关闭转写
+    AutoAsr *bool `json:"auto_asr,omitempty"`
     // 是否开启等候室，默认值为 false。 true：开启 false：不开启
     AutoInWaitingRoom *bool `json:"auto_in_waiting_room,omitempty"`
     // 自动会议录制类型。 none：禁用，表示不开启自动会议录制。 local：本地录制，表示主持人入会后自动开启本地录制。 cloud：云录制，表示主持人入会后自动开启云录制。 说明： 该参数依赖企业账户设置，当企业强制锁定后，该参数必须与企业配置保持一致。 仅客户端2.7及以上版本可生效。
@@ -1546,6 +1564,8 @@ type V1MeetingsPostRequestSettings struct {
     OnlyEnterpriseUserAllowed *bool `json:"only_enterprise_user_allowed,omitempty"`
     // 成员入会限制，1：所有成员可入会，2：仅受邀成员可入会，3：仅企业内部成员可入会 ；当only_user_join_type和only_allow_enterprise_user_join同时传的时候，以only_user_join_type为准
     OnlyUserJoinType *int64 `json:"only_user_join_type,omitempty"`
+    // 设置主持人入会是否自动打开转写侧边栏 在auto_asr为true下才会生效，0是默认开启，1是关闭
+    OpenAsrView *int64 `json:"open_asr_view,omitempty"`
     // 当有参会成员入会时立即开启云录制，默认值为 false 关闭，关闭时，主持人入会自动开启云录制；当设置为开启时，则有参会成员入会自动开启云录制。 说明： 该参数必须 auto_record_type 设置为“cloud”时才生效，该参数依赖企业账户设置，当企业强制锁定后，该参数必须与企业配置保持一致。 仅客户端2.7及以上版本生效。
     ParticipantJoinAutoRecord *bool `json:"participant_join_auto_record,omitempty"`
     // 有新的与会者加入时播放提示音，暂不支持，可在客户端设置

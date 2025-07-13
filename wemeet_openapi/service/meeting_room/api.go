@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.8
+    API version: v1.0.9
 */
 package wemeetopenapi
 
@@ -206,6 +206,10 @@ func NewService(config *core.Config) Service {
 
 
 type ApiV1DevicesGetRequest struct {
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType *string `json:"-"`
     // 页码，从1开始，默认1。
     Page *string `json:"-"`
     // 分页大小，从1开始，最大50，默认20。
@@ -234,6 +238,14 @@ func (s *meetingRoomAPIService) V1DevicesGet(ctx context.Context, request *ApiV1
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     // query 参数
     if request.Page != nil {
@@ -244,6 +256,12 @@ func (s *meetingRoomAPIService) V1DevicesGet(ctx context.Context, request *ApiV1
     }
     if request.MeetingRoomName != nil {
         apiReq.QueryParams.Set("meeting_room_name", core.QueryValue(request.MeetingRoomName))
+    }
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
     }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
@@ -350,6 +368,10 @@ func (s *meetingRoomAPIService) V1MeetingRoomsCancelRoomCallPut(ctx context.Cont
 }
 
 type ApiV1MeetingRoomsGetRequest struct {
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType *string `json:"-"`
     // 页码
     Page *string `json:"-"`
     // 分页大小
@@ -378,6 +400,14 @@ func (s *meetingRoomAPIService) V1MeetingRoomsGet(ctx context.Context, request *
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     // query 参数
     if request.Page != nil {
@@ -388,6 +418,12 @@ func (s *meetingRoomAPIService) V1MeetingRoomsGet(ctx context.Context, request *
     }
     if request.MeetingRoomName != nil {
         apiReq.QueryParams.Set("meeting_room_name", core.QueryValue(request.MeetingRoomName))
+    }
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
     }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
@@ -430,6 +466,10 @@ func (s *meetingRoomAPIService) V1MeetingRoomsGet(ctx context.Context, request *
 type ApiV1MeetingRoomsMeetingRoomIdActiveCodePostRequest struct {
     // 会议室id
     MeetingRoomId string `json:"-"`
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -452,9 +492,23 @@ func (s *meetingRoomAPIService) V1MeetingRoomsMeetingRoomIdActiveCodePost(ctx co
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     apiReq.PathParams.Set("meeting_room_id", core.PathValue(request.MeetingRoomId))
     // query 参数
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
+    }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
     for _, opt := range opts {
@@ -641,6 +695,10 @@ func (s *meetingRoomAPIService) V1MeetingRoomsMeetingRoomIdBackgroundPost(ctx co
 type ApiV1MeetingRoomsMeetingRoomIdGetRequest struct {
     // 会议室ID
     MeetingRoomId string `json:"-"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType *string `json:"-"`
+    // 作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -663,9 +721,23 @@ func (s *meetingRoomAPIService) V1MeetingRoomsMeetingRoomIdGet(ctx context.Conte
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
     // path 参数
     apiReq.PathParams.Set("meeting_room_id", core.PathValue(request.MeetingRoomId))
     // query 参数
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
+    }
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
     for _, opt := range opts {
@@ -837,12 +909,17 @@ func (s *meetingRoomAPIService) V1MeetingRoomsModifyRoomConfigInfoPost(ctx conte
 }
 
 type ApiV1MeetingRoomsMonitorDeviceControllerInfoGetRequest struct {
+    // 操作者 ID 的类型： 1：useri
+    OperatorIdType *string `json:"-"`
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
     // 需要查询的设备名称（支持模糊匹配查找），如需获取全量列表，则不需要传入。
     ControllerName *string `json:"-"`
     // 页码，从1开始，默认1。
     Page *string `json:"-"`
     // 分页大小，从1开始，最大50，默认20。
     PageSize *string `json:"-"`
+    Body *map[string]interface{} `json:"body,omitempty"`
 }
 
 type ApiV1MeetingRoomsMonitorDeviceControllerInfoGetResponse struct {
@@ -859,8 +936,17 @@ V1MeetingRoomsMonitorDeviceControllerInfoGet 查询控制器列表[/v1/meeting-r
 func (s *meetingRoomAPIService) V1MeetingRoomsMonitorDeviceControllerInfoGet(ctx context.Context, request *ApiV1MeetingRoomsMonitorDeviceControllerInfoGetRequest, opts ...core.RequestOptionFunc) (response *ApiV1MeetingRoomsMonitorDeviceControllerInfoGetResponse, err error) {
     apiReq := &xhttp.ApiRequest{
         ApiURI:      "/v1/meeting-rooms-monitor/device-controller-info",
+        Body:        request.Body,
         PathParams:  xhttp.PathParams{},
         QueryParams: xhttp.QueryParams{},
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
     }
 
     // path 参数
@@ -873,6 +959,12 @@ func (s *meetingRoomAPIService) V1MeetingRoomsMonitorDeviceControllerInfoGet(ctx
     }
     if request.PageSize != nil {
         apiReq.QueryParams.Set("page_size", core.QueryValue(request.PageSize))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
+    }
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
     }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
@@ -918,10 +1010,6 @@ type ApiV1MeetingRoomsOperatorIdMeetingsGetRequest struct {
     OperatorIdType *string `json:"-"`
     // 用户的终端设备类型： 1：PC 2：Mac 3：Android 4：iOS 5：Web 6：iPad 7：Android Pad 8：小程序 9：voip、sip 设备 10：linux 20：Rooms for Touch Windows 21：Rooms for Touch Mac 22：Rooms for Touch Android 30：Controller for Touch Windows 32：Controller for Touch Android 33：Controller for Touch Iphone
     Instanceid *string `json:"-"`
-    // 目标查询 roomsid。
-    TargetRoomsId *string `json:"-"`
-    // 目标查询 roomsid 的类型： 3：rooms 设备 rooms_id 5：会议室 ID meeting_room_id
-    TargetRoomsIdType *string `json:"-"`
     // Unix 时间戳。查询起始时间，时间区间不超过90天。
     StartTime *string `json:"-"`
     // Unix 时间戳。查询结束时间，时间区间不超过90天。
@@ -930,6 +1018,10 @@ type ApiV1MeetingRoomsOperatorIdMeetingsGetRequest struct {
     Page *string `json:"-"`
     // 分页大小，默认20条，最大20条。
     PageSize *string `json:"-"`
+    // 目标查询 roomsid。
+    TargetRoomsId *string `json:"-"`
+    // 目标查询 roomsid 的类型： 3：rooms 设备 rooms_id 5：会议室 ID meeting_room_id
+    TargetRoomsIdType *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -958,14 +1050,6 @@ func (s *meetingRoomAPIService) V1MeetingRoomsOperatorIdMeetingsGet(ctx context.
 
     if request.Instanceid == nil {
         return nil, fmt.Errorf("instanceid is required and must be specified")
-    }
-
-    if request.TargetRoomsId == nil {
-        return nil, fmt.Errorf("target_rooms_id is required and must be specified")
-    }
-
-    if request.TargetRoomsIdType == nil {
-        return nil, fmt.Errorf("target_rooms_id_type is required and must be specified")
     }
 
     // path 参数
@@ -1234,6 +1318,10 @@ func (s *meetingRoomAPIService) V1MeetingRoomsRoomConfigInfoPost(ctx context.Con
 type ApiV1MeetingRoomsScreencastCodeRoomsInfoGetRequest struct {
     // 投屏码
     ScreencastCode string `json:"-"`
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -1254,9 +1342,23 @@ func (s *meetingRoomAPIService) V1MeetingRoomsScreencastCodeRoomsInfoGet(ctx con
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     apiReq.PathParams.Set("screencast_code", core.PathValue(request.ScreencastCode))
     // query 参数
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
+    }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
     for _, opt := range opts {
@@ -1367,7 +1469,7 @@ func (s *meetingRoomAPIService) V1MeetingsMeetingIdBookRoomsPost(ctx context.Con
 type ApiV1MeetingsMeetingIdReleaseRoomsPostRequest struct {
     // 会议唯一id
     MeetingId string `json:"-"`
-    Body *map[string]interface{} `json:"body,omitempty"`
+    Body *V1MeetingsMeetingIdReleaseRoomsPostRequest `json:"body,omitempty"`
 }
 
 type ApiV1MeetingsMeetingIdReleaseRoomsPostResponse struct {
@@ -1431,6 +1533,10 @@ func (s *meetingRoomAPIService) V1MeetingsMeetingIdReleaseRoomsPost(ctx context.
 }
 
 type ApiV1RoomsInventoryAccountStatisticsGetRequest struct {
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType *string `json:"-"`
     Body *map[string]interface{} `json:"body,omitempty"`
 }
 
@@ -1453,8 +1559,22 @@ func (s *meetingRoomAPIService) V1RoomsInventoryAccountStatisticsGet(ctx context
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     // query 参数
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
+    }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
     for _, opt := range opts {
@@ -1494,6 +1614,11 @@ func (s *meetingRoomAPIService) V1RoomsInventoryAccountStatisticsGet(ctx context
 }
 
 type ApiV1RoomsInventoryGetRequest struct {
+    // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
+    OperatorId *string `json:"-"`
+    // 操作者 ID 的类型： 1：userid
+    OperatorIdType *string `json:"-"`
+    Body *map[string]interface{} `json:"body,omitempty"`
 }
 
 type ApiV1RoomsInventoryGetResponse struct {
@@ -1510,12 +1635,27 @@ V1RoomsInventoryGet 查询账户下 Rooms 资源[/v1/rooms-inventory - Get]
 func (s *meetingRoomAPIService) V1RoomsInventoryGet(ctx context.Context, request *ApiV1RoomsInventoryGetRequest, opts ...core.RequestOptionFunc) (response *ApiV1RoomsInventoryGetResponse, err error) {
     apiReq := &xhttp.ApiRequest{
         ApiURI:      "/v1/rooms-inventory",
+        Body:        request.Body,
         PathParams:  xhttp.PathParams{},
         QueryParams: xhttp.QueryParams{},
     }
 
+    if request.OperatorId == nil {
+        return nil, fmt.Errorf("operator_id is required and must be specified")
+    }
+
+    if request.OperatorIdType == nil {
+        return nil, fmt.Errorf("operator_id_type is required and must be specified")
+    }
+
     // path 参数
     // query 参数
+    if request.OperatorId != nil {
+        apiReq.QueryParams.Set("operator_id", core.QueryValue(request.OperatorId))
+    }
+    if request.OperatorIdType != nil {
+        apiReq.QueryParams.Set("operator_id_type", core.QueryValue(request.OperatorIdType))
+    }
     // 转换 options
     var httpOptions []xhttp.RequestOptionFunc
     for _, opt := range opts {
