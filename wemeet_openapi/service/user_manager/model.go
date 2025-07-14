@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.9
+    API version: v1.0.10
 */
 package wemeetopenapi
 
@@ -469,6 +469,8 @@ type V1UsersListGet200ResponseUsersInnerDepartmentListInner struct {
 
 // V1UsersOpenIdToUseridPost200Response struct for V1UsersOpenIdToUseridPost200Response
 type V1UsersOpenIdToUseridPost200Response struct {
+    // 所有没有转换成功的open_id列表。 例如：open_id和sdkid不一致、open_id和自建应用不是同企业、open_id非法等情况。
+    InvalidOpenIdList []string `json:"invalid_open_id_list,omitempty"`
     // 转换成功的该自建应用所在企业下的userid、open_id对应关系列表。
     UseridList []V1UsersOpenIdToUseridPost200ResponseUseridListInner `json:"userid_list,omitempty"`
 }
@@ -483,6 +485,8 @@ type V1UsersOpenIdToUseridPost200ResponseUseridListInner struct {
 
 // V1UsersOpenIdToUseridPostRequest struct for V1UsersOpenIdToUseridPostRequest
 type V1UsersOpenIdToUseridPostRequest struct {
+    // 需要转换的open_id列表 。一次最多1000个。
+    OpenIdList []string `json:"open_id_list"`
     // 操作者ID
     OperatorId string `json:"operator_id"`
     // 操作者ID类型
@@ -508,6 +512,7 @@ type V1UsersPostRequest struct {
     Area *string `json:"area,omitempty"`
     // 自动发送邀请，开启之后调用接口后自动发送激活邀请 true：开启，默认开启;false：关闭
     AutoInvite *bool `json:"auto_invite,omitempty"`
+    DepartmentList []string `json:"department_list,omitempty"`
     Email *string `json:"email,omitempty"`
     EntryTime *int64 `json:"entry_time,omitempty"`
     // 是否为voov用户， 0:否  1:是
@@ -614,6 +619,7 @@ type V1UsersUseridPutRequest struct {
     AddOnWebinar *int64 `json:"add_on_webinar,omitempty"`
     Area *string `json:"area,omitempty"`
     AvatarUrl *string `json:"avatar_url,omitempty"`
+    DepartmentList []string `json:"department_list,omitempty"`
     Email *string `json:"email,omitempty"`
     EntryTime *int64 `json:"entry_time,omitempty"`
     // 是否为voov用户，默认为0  0:否  1:是

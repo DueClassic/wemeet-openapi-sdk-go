@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.9
+    API version: v1.0.10
 */
 package wemeetopenapi
 
@@ -1201,6 +1201,7 @@ type ApiV1RecordsEventsGetRequest struct {
     StartTime *string `json:"-"`
     // 查询结束时间戳，UNIX 时间戳（单位秒）。说明：时间区间不允许超过31天。
     EndTime *string `json:"-"`
+    Body *map[string]interface{} `json:"body,omitempty"`
 }
 
 type ApiV1RecordsEventsGetResponse struct {
@@ -1220,6 +1221,7 @@ V1RecordsEventsGet 获取会议录制操作（查看、下载）记录[/v1/recor
 func (s *recordsAPIService) V1RecordsEventsGet(ctx context.Context, request *ApiV1RecordsEventsGetRequest, opts ...core.RequestOptionFunc) (response *ApiV1RecordsEventsGetResponse, err error) {
     apiReq := &xhttp.ApiRequest{
         ApiURI:      "/v1/records/events",
+        Body:        request.Body,
         PathParams:  xhttp.PathParams{},
         QueryParams: xhttp.QueryParams{},
     }

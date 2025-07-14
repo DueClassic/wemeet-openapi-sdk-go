@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.9
+    API version: v1.0.10
 */
 package wemeetopenapi
 
@@ -181,6 +181,8 @@ type V1MeetingRoomsMeetingRoomIdGet200ResponseBasicInfo struct {
     MeetingRoomName *string `json:"meeting_room_name,omitempty"`
     // 容纳人数
     ParticipantNumber *int64 `json:"participant_number,omitempty"`
+    // roomsID列表
+    RoomsIdList []string `json:"rooms_id_list,omitempty"`
 }
 
 // V1MeetingRoomsMeetingRoomIdGet200ResponseHardwareInfo 会议室硬件信息
@@ -269,6 +271,8 @@ type V1MeetingRoomsModifyPutRequestMeetingRoomInfo struct {
     Device []string `json:"device,omitempty"`
     // 楼层。若非输入建筑下现有楼层则自动创建楼层。输入应为数字或字母，长度不超过36个字符。
     Floor *string `json:"floor,omitempty"`
+    // 标签。非现有标签则自动创建，最多设置10个标签，每个标签不超过40个字。
+    Label []string `json:"label,omitempty"`
     // 会议室名称。长度不超过36个字符。
     MeetingRoomName string `json:"meeting_room_name"`
     // 会议室类型。 0：rooms 会议室 1：无类型会议室 2：SIP 会议室 4：H.323 会议室
@@ -310,6 +314,7 @@ type V1MeetingRoomsModifyRoomConfigInfoPostRequestMeetingSettings struct {
 // V1MeetingRoomsModifyRoomConfigInfoPostRequestMeetingSettingsRoomPmiSettings struct for V1MeetingRoomsModifyRoomConfigInfoPostRequestMeetingSettingsRoomPmiSettings
 type V1MeetingRoomsModifyRoomConfigInfoPostRequestMeetingSettingsRoomPmiSettings struct {
     AllowInBeforeHost *bool `json:"allow_in_before_host,omitempty"`
+    Hosts []string `json:"hosts,omitempty"`
     MuteEnableTypeJoin *int64 `json:"mute_enable_type_join,omitempty"`
     OnlyEnterpriseUserAllowed *bool `json:"only_enterprise_user_allowed,omitempty"`
     RoomPmiPsw *string `json:"room_pmi_psw,omitempty"`
@@ -544,6 +549,8 @@ type V1MeetingsMeetingIdBookRoomsPostRequest struct {
 
 // V1MeetingsMeetingIdReleaseRoomsPostRequest struct for V1MeetingsMeetingIdReleaseRoomsPostRequest
 type V1MeetingsMeetingIdReleaseRoomsPostRequest struct {
+    // 会议室ID列表
+    MeetingRoomIdList []string `json:"meeting_room_id_list"`
     // 操作者 ID。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
     OperatorId string `json:"operator_id"`
     // 操作者 ID 的类型： 1：userid

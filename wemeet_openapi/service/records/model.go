@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.9
+    API version: v1.0.10
 */
 package wemeetopenapi
 
@@ -59,10 +59,16 @@ type V1AddressesGet200ResponseRecordFilesInnerMeetingSummaryInner struct {
 
 // V1AddressesRecordFileIdGet200Response struct for V1AddressesRecordFileIdGet200Response
 type V1AddressesRecordFileIdGet200Response struct {
+    // ds-摘要
+    AiDsMinutes []V1AddressesRecordFileIdGet200ResponseAiDsMinutesInner `json:"ai_ds_minutes,omitempty"`
     // 录制转写文件（智能优化版）列表。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。
     AiMeetingTranscripts []V1AddressesRecordFileIdGet200ResponseAiMeetingTranscriptsInner `json:"ai_meeting_transcripts,omitempty"`
     // 智能纪要列表。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。 注：如会议录制不允许导出或被关闭下载，则不出现在此返回结果中。
     AiMinutes []V1AddressesRecordFileIdGet200ResponseAiMeetingTranscriptsInner `json:"ai_minutes,omitempty"`
+    // 混元-发言人纪要
+    AiSpeakerMinutes []V1AddressesRecordFileIdGet200ResponseAiDsMinutesInner `json:"ai_speaker_minutes,omitempty"`
+    // 混元-主题纪要
+    AiTopicMinutes []V1AddressesRecordFileIdGet200ResponseAiDsMinutesInner `json:"ai_topic_minutes,omitempty"`
     // 音频下载地址。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。
     AudioAddress *string `json:"audio_address,omitempty"`
     // 下载音频文件格式，例如：m4a。OAuth 鉴权方式下，账号类型为个人免费版、企微创建企业时，该值返回为空。
@@ -81,6 +87,12 @@ type V1AddressesRecordFileIdGet200Response struct {
     RecordFileId *string `json:"record_file_id,omitempty"`
     // 播放地址。
     ViewAddress *string `json:"view_address,omitempty"`
+}
+
+// V1AddressesRecordFileIdGet200ResponseAiDsMinutesInner struct for V1AddressesRecordFileIdGet200ResponseAiDsMinutesInner
+type V1AddressesRecordFileIdGet200ResponseAiDsMinutesInner struct {
+    DownloadAddress *string `json:"download_address,omitempty"`
+    FileType *string `json:"file_type,omitempty"`
 }
 
 // V1AddressesRecordFileIdGet200ResponseAiMeetingTranscriptsInner struct for V1AddressesRecordFileIdGet200ResponseAiMeetingTranscriptsInner
@@ -386,6 +398,7 @@ type V1RecordsTranscriptsDetailsGet200Response struct {
 type V1RecordsTranscriptsDetailsGet200ResponseMinutes struct {
     // 声纹识别状态0-未完成 1-已完成。说明：声纹识别是针对 Rooms 等设备出现一台设备多人讲话场景时，自动区分为多个发言人的能力。声纹识别与纪要生成的过程独立。无需声纹识别或声纹识别已完成时，该值为1。
     AudioDetect *int64 `json:"audio_detect,omitempty"`
+    Keywords []string `json:"keywords,omitempty"`
     // 段落对象列表
     Paragraphs []V1RecordsTranscriptsDetailsGet200ResponseMinutesParagraphsInner `json:"paragraphs,omitempty"`
 }

@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.9
+    API version: v1.0.10
 */
 package wemeetopenapi
 
@@ -758,6 +758,12 @@ type V1MeetingsMeetingIdInviteesGet200ResponseInviteesInner struct {
     NickName *string `json:"nick_name,omitempty"`
     // 用户的唯一 ID（企业内部请使用企业唯一用户标识；OAuth2.0 鉴权用户请使用 openId）
     Userid *string `json:"userid,omitempty"`
+}
+
+// V1MeetingsMeetingIdInviteesPut200Response struct for V1MeetingsMeetingIdInviteesPut200Response
+type V1MeetingsMeetingIdInviteesPut200Response struct {
+    // 邀请的参会者中未注册用户
+    UserNonRegistered []string `json:"user_non_registered,omitempty"`
 }
 
 // V1MeetingsMeetingIdInviteesPutRequest struct for V1MeetingsMeetingIdInviteesPutRequest
@@ -1592,6 +1598,10 @@ type V1MeetingsQueryMeetingidForDevicePost200ResponseMeetingIdMapInner struct {
 
 // V1MeetingsQueryMeetingidForDevicePostRequest struct for V1MeetingsQueryMeetingidForDevicePostRequest
 type V1MeetingsQueryMeetingidForDevicePostRequest struct {
+    // 终端设备类型列表，该参数不带，则会查询所有设备上的会议信息，带则表示查询指定设备。 用户的终端设备类型： 0：PSTN 1：PC 2：Mac 3：Android 4：iOS 5：Web 6：iPad 7：Android Pad 8：小程序 9：voip、sip 设备 10：linux 20：Rooms for Touch Windows 21：Rooms for Touch MacOS 22：Rooms for Touch Android 30：Controller for Touch Windows 32：Controller for Touch Android 33：Controller for Touch iOS
+    Instanceids []int64 `json:"instanceids,omitempty"`
+    // 会议ID。查询用户是否有设备在指定的会中。  企业自建鉴权方式，该参数必填且必须为本企业创建的会议。只能查询某个用户是否在某场本企业的会中。
+    MeetingId []string `json:"meeting_id"`
     // 操作者 ID，即查询者的信息。 operator_id 必须与 operator_id_type 配合使用。根据 operator_id_type 的值，operator_id 代表不同类型。
     OperatorId string `json:"operator_id"`
     // 操作者 ID 的类型：  1：企业内用户 userid。JWT鉴权仅支持userid 

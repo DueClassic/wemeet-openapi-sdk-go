@@ -4,7 +4,7 @@
 
     SAAS版RESTFUL风格API
 
-    API version: v1.0.9
+    API version: v1.0.10
 */
 package wemeetopenapi
 
@@ -2134,7 +2134,7 @@ type ApiV1MeetingsMeetingIdInviteesPutRequest struct {
 
 type ApiV1MeetingsMeetingIdInviteesPutResponse struct {
     *xhttp.ApiResponse
-    Data *map[string]interface{} `json:"data,omitempty"`
+    Data *V1MeetingsMeetingIdInviteesPut200Response `json:"data,omitempty"`
 }
 
 /*
@@ -2183,7 +2183,7 @@ func (s *meetingsAPIService) V1MeetingsMeetingIdInviteesPut(ctx context.Context,
 
     response = &ApiV1MeetingsMeetingIdInviteesPutResponse{
         ApiResponse: apiRsp,
-        Data:        new(map[string]interface{}),
+        Data:        new(V1MeetingsMeetingIdInviteesPut200Response),
     }
     if err = apiRsp.Translate(response.Data); err != nil {
         return nil, &core.ClientError{
