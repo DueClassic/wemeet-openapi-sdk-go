@@ -1,4 +1,4 @@
 package wemeetcore
 
 // Version SDK 版本
-const Version = "v1.0.10"
+const Version = "v1.0.11"

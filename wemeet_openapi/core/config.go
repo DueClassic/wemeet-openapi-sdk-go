@@ -25,6 +25,12 @@ type Config struct {
 	SdkId     string
 	SecretID  string // 应用生成的 Secret ID。JWT 鉴权用。
 	SecretKey string // 应用生成的 Secret Key。JWT 鉴权用。
+
+	// Domain 自定义 OpenAPI 域名。
+	//
+	// 当 SDK 默认域名因运营商封禁等原因无法访问时，可通过此字段指定可用域名；
+	// 为空时使用 SDK 默认域名 OpenAPIDomain。
+	Domain string
 }
 
 // RequestOptionFunc 对外请求配置

@@ -9,6 +9,7 @@ import (
 	meeting_guest "github.com/TencentCloud/wemeet-openapi-sdk-go/wemeet_openapi/service/meeting_guest"
 	meeting_room "github.com/TencentCloud/wemeet-openapi-sdk-go/wemeet_openapi/service/meeting_room"
 	meetings "github.com/TencentCloud/wemeet-openapi-sdk-go/wemeet_openapi/service/meetings"
+	pstn "github.com/TencentCloud/wemeet-openapi-sdk-go/wemeet_openapi/service/pstn"
 	record_intelligence "github.com/TencentCloud/wemeet-openapi-sdk-go/wemeet_openapi/service/record_intelligence"
 	records "github.com/TencentCloud/wemeet-openapi-sdk-go/wemeet_openapi/service/records"
 	user_manager "github.com/TencentCloud/wemeet-openapi-sdk-go/wemeet_openapi/service/user_manager"
@@ -24,6 +25,7 @@ type Client struct {
 	RecordsApi            records.Service
 	RecordIntelligenceApi record_intelligence.Service
 	MeetingGuestApi       meeting_guest.Service
+	PstnApi               pstn.Service
 	MeetingRoomApi        meeting_room.Service
 	LayoutApi             layout.Service
 }
@@ -77,6 +79,16 @@ func WithHTTPClient(clt xhttp.Client) ClientOptionFunc {
 	}
 }
 
+// WithDomain 设置自定义 OpenAPI 域名。
+//
+// 当 SDK 默认域名因运营商封禁等原因无法访问时，可通过此选项指定可用域名；
+// 不调用该选项时，SDK 使用默认域名 core.OpenAPIDomain。
+func WithDomain(domain string) ClientOptionFunc {
+	return func(config *core.Config) {
+		config.Domain = domain
+	}
+}
+
 func NewClient(options ...ClientOptionFunc) *Client {
 	// 构建配置
 	config := &core.Config{}
@@ -88,7 +100,11 @@ func NewClient(options ...ClientOptionFunc) *Client {
 
 	// 构建 wemeet http client
 	if config.Clt == nil {
-		config.Clt, _ = xhttp.NewClient(core.OpenAPIDomain,
+		domain := config.Domain
+		if domain == "" {
+			domain = core.OpenAPIDomain
+		}
+		config.Clt, _ = xhttp.NewClient(domain,
 			xhttp.WithProtocol(core.DefaultProtocol),
 			xhttp.WithSerializer(core.DefaultSerializer))
 	}
@@ -109,6 +125,7 @@ func initService(client *Client) {
 	client.RecordsApi = records.NewService(client.config)
 	client.RecordIntelligenceApi = record_intelligence.NewService(client.config)
 	client.MeetingGuestApi = meeting_guest.NewService(client.config)
+	client.PstnApi = pstn.NewService(client.config)
 	client.MeetingRoomApi = meeting_room.NewService(client.config)
 	client.LayoutApi = layout.NewService(client.config)
 }
